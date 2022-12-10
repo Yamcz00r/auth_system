@@ -17,7 +17,8 @@ import { EmailIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useState } from "react";
 import ModalComponent from "../src/components/RetrivePasswordModal";
-
+import { useContext } from "react";
+import { AuthContext } from '../src/Context/AuthContext';
 export default function Home() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +26,9 @@ export default function Home() {
   const [passwordValid, setPasswordValid] = useState(true);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const context = useContext(AuthContext);
+
+  console.log(context);
 
   const passwordChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
