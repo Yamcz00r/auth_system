@@ -11,21 +11,20 @@ import {
   InputLeftElement,
   FormErrorMessage,
   FormHelperText,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { EmailIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useState } from "react";
-import ModalComponent from "../src/components/RetrivePasswordModal";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../src/firebase-config";
+import { useToast } from "@chakra-ui/react";
 
-export default function Home() {
+export default function Register() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const toast = useToast();
   const passwordChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -52,8 +51,22 @@ export default function Home() {
     }
   };
 
-  const formSubmitHandler = (event: React.FormEvent) => {
+  const formSubmitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (emailValid === false || passwordValid === false) {
+        toast({
+            title: 'Error',
+            description: "Check that the email and password are not empty",
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        })
+        return;
+    } 
+
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log(userCredential);
+
   };
 
   return (
@@ -67,7 +80,7 @@ export default function Home() {
         padding="7"
       >
         <Text as="b" fontSize="4xl">
-          Login
+          Create an account
         </Text>
         <form onSubmit={formSubmitHandler}>
           <Flex
@@ -115,25 +128,17 @@ export default function Home() {
                     Password is required
                   </FormErrorMessage>
                 )}
-                <FormHelperText
-                  _hover={{ textDecoration: "underline" }}
-                  cursor="pointer"
-                  onClick={onOpen}
-                >
-                  Forgot password ?
-                </FormHelperText>
               </Flex>
             </FormControl>
             <Button type="submit" mt="3" size="md" fontSize="2xl" padding="5">
               Submit
             </Button>
-            <Link style={{ textDecoration: "underline" }} href="/Register">
-              Dosen't have account? Create it already
+            <Link style={{ textDecoration: "underline" }} href="/">
+              Already have an account ? Login here
             </Link>
           </Flex>
         </form>
       </Box>
-      <ModalComponent isOpen={isOpen}  onClose={onClose} />
     </Container>
   );
 }
