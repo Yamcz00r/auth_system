@@ -10,7 +10,6 @@ import {
   InputGroup,
   InputLeftElement,
   FormErrorMessage,
-  FormHelperText,
 } from "@chakra-ui/react";
 import { EmailIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Link from "next/link";
@@ -18,13 +17,16 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../src/firebase-config";
 import { useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 export default function Register() {
+
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const toast = useToast();
+  const router = useRouter();
   const passwordChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -52,21 +54,42 @@ export default function Register() {
   };
 
   const formSubmitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (emailValid === false || passwordValid === false) {
+    try {
+      event.preventDefault();
+      if (emailValid === false || passwordValid === false) {
         toast({
-            title: 'Error',
-            description: "Check that the email and password are not empty",
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-        })
+          title: "Error",
+          description: "Check that the email and password are not empty",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
         return;
-    } 
+      }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(userCredential);
-
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      toast({
+        title: "Success",
+        description: "Successfully created an account",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      router.push("/Dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
   };
 
   return (

@@ -3,23 +3,23 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputLeftElement,
   FormErrorMessage,
-  FormHelperText,
   Flex,
-  Text
+  Text,
+  useToast
 } from "@chakra-ui/react";
 import { EmailIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { auth } from "../firebase-config";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export default function ModalComponent({
 
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
-
+  const toast = useToast();
 
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -46,6 +46,17 @@ export default function ModalComponent({
       setEmailValid(true);
     }
   };
+
+  const passwordChangeHandler = async () => {
+    await sendPasswordResetEmail(auth, email);
+    toast({
+      title: "Success",
+      description: "We send you a link to change password. Check spam folder",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -74,7 +85,7 @@ export default function ModalComponent({
                       <FormErrorMessage>Email is required</FormErrorMessage>
                   )}
                 </FormControl>
-                <Button my='5'>Send an Email</Button>
+                <Button onClick={passwordChangeHandler} my='5'>Send an Email</Button>
             </Flex>
         </ModalBody>
       </ModalContent>

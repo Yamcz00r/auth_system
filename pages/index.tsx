@@ -12,6 +12,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { EmailIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Link from "next/link";
@@ -19,16 +20,21 @@ import { useState } from "react";
 import ModalComponent from "../src/components/RetrivePasswordModal";
 import { useContext } from "react";
 import { AuthContext } from '../src/Context/AuthContext';
+import { auth } from "../src/firebase-config";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from "next/router";
+
 export default function Home() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
-
+  const toast = useToast();
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const context = useContext(AuthContext);
+  
 
-  console.log(context);
+  
 
   const passwordChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -36,7 +42,7 @@ export default function Home() {
     setPassword(event.target.value);
   };
 
-  const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const emailChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
 
@@ -56,8 +62,43 @@ export default function Home() {
     }
   };
 
-  const formSubmitHandler = (event: React.FormEvent) => {
-    event.preventDefault();
+  const formSubmitHandler = async (event: React.FormEvent) => {
+    try {
+      event.preventDefault();
+      if (emailValid === false || passwordValid === false) {
+        toast({
+          title: "Error",
+          description: "Check that the email and password are not empty",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      toast({
+        title: "Success",
+        description: "Successfully logged in",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      router.replace("/Dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
   };
 
   return (
