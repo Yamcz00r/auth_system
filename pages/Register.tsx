@@ -20,7 +20,6 @@ import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 export default function Register() {
-
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
@@ -93,75 +92,77 @@ export default function Register() {
   };
 
   return (
-    <Container mt="52" centerContent={true} maxW="container.lg">
-      <Box
-        textAlign="center"
-        maxH="max-content"
-        minW="lg"
-        borderRadius="lg"
-        boxShadow="xl"
-        padding="7"
-      >
-        <Text as="b" fontSize="4xl">
-          Create an account
-        </Text>
-        <form onSubmit={formSubmitHandler}>
-          <Flex
-            alignItems="center"
-            gap="5"
-            justifyContent="center"
-            flexDirection="column"
-            marginTop="5"
-          >
-            <FormControl isInvalid={!emailValid}>
-              <FormLabel fontSize="lg">Email</FormLabel>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<EmailIcon color="gray.300" />}
-                />
-                <Input
-                  onBlur={emailBlurHandler}
-                  onChange={emailChangeHandler}
-                  placeholder="Enter your email"
-                  type="email"
-                />
-              </InputGroup>
-              {!emailValid && (
-                <FormErrorMessage>Email is required</FormErrorMessage>
-              )}
-            </FormControl>
-            <FormControl isInvalid={!passwordValid}>
-              <FormLabel fontSize="lg">Password</FormLabel>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<ViewOffIcon color="gray.300" />}
-                />
-                <Input
-                  onBlur={passwordBlurHandler}
-                  onChange={passwordChangeHandler}
-                  placeholder="Enter your password"
-                  type="password"
-                />
-              </InputGroup>
-              <Flex justifyContent="space-between">
-                {!passwordValid && (
-                  <FormErrorMessage alignSelf="start">
-                    Password is required
-                  </FormErrorMessage>
+    <Container style={{ height: "100vh" }} maxW="container.lg">
+      <Flex justifyContent="center" alignItems="center" height="full">
+        <Box
+          textAlign="center"
+          maxH="max-content"
+          minW="lg"
+          borderRadius="lg"
+          boxShadow="xl"
+          padding="7"
+        >
+          <Text as="b" fontSize="4xl">
+            Create an account
+          </Text>
+          <form onSubmit={formSubmitHandler}>
+            <Flex
+              alignItems="center"
+              gap="5"
+              justifyContent="center"
+              flexDirection="column"
+              marginTop="5"
+            >
+              <FormControl isInvalid={!emailValid}>
+                <FormLabel fontSize="lg">Email</FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<EmailIcon color="gray.300" />}
+                  />
+                  <Input
+                    onBlur={emailBlurHandler}
+                    onChange={emailChangeHandler}
+                    placeholder="Enter your email"
+                    type="email"
+                  />
+                </InputGroup>
+                {!emailValid && (
+                  <FormErrorMessage>Email is required</FormErrorMessage>
                 )}
-              </Flex>
-            </FormControl>
-            <Button type="submit" mt="3" size="md" fontSize="2xl" padding="5">
-              Submit
-            </Button>
-            <Link style={{ textDecoration: "underline" }} href="/">
-              Already have an account ? Login here
-            </Link>
-          </Flex>
-        </form>
-      </Box>
+              </FormControl>
+              <FormControl isInvalid={!passwordValid}>
+                <FormLabel fontSize="lg">Password</FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<ViewOffIcon color="gray.300" />}
+                  />
+                  <Input
+                    onBlur={passwordBlurHandler}
+                    onChange={passwordChangeHandler}
+                    placeholder="Enter your password"
+                    type="password"
+                  />
+                </InputGroup>
+                <Flex justifyContent="space-between">
+                  {!passwordValid && (
+                    <FormErrorMessage alignSelf="start">
+                      Password is required
+                    </FormErrorMessage>
+                  )}
+                </Flex>
+              </FormControl>
+              <Button type="submit" mt="3" size="md" fontSize="2xl" padding="5">
+                Submit
+              </Button>
+              <Link style={{ textDecoration: "underline" }} href="/">
+                Already have an account ? Login here
+              </Link>
+            </Flex>
+          </form>
+        </Box>
+      </Flex>
     </Container>
   );
 }
