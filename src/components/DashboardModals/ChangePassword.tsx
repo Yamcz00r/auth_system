@@ -16,45 +16,44 @@ import {
     Text,
     useToast
   } from "@chakra-ui/react";
-  import { EmailIcon } from "@chakra-ui/icons";
+  import { ViewOffIcon } from "@chakra-ui/icons";
   import { useState } from "react";
-  import { User, updateEmail } from "firebase/auth";
-  
+  import { User, sendPasswordResetEmail } from "firebase/auth";
+
   interface ModalProps {
     isOpen: boolean,
     onClose: () => void,
     user: User
   }
   
-  export default function EmailModal({
+  export default function PasswordModal({
     isOpen,
     onClose,
     user
   }: ModalProps) {
   
-    const [email, setEmail] = useState("");
-    const [emailValid, setEmailValid] = useState(true);
+    const [password, setPassword] = useState("");
+    const [passwordValid, setPasswordValid] = useState(true);
     const toast = useToast();
   
-    const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(event.target.value);
+    const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(event.target.value);
     };
   
-    const emailBlurHandler = () => {
-      if (email.length === 0) {
-        setEmailValid(false);
+    const passwordBlurHandler = () => {
+      if (password.length === 0) {
+        setPasswordValid(false);
       } else {
-        setEmailValid(true);
+        setPasswordValid(true);
       }
     };
 
-    const updateEmailHandler = async () => {
+    const updatePasswordHandler = async () => {
       try {
-        await updateEmail(user, email);
         onClose();
         toast({
           title: "Success",
-          description: "Email is changed",
+          description: "Password is changed",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -74,30 +73,30 @@ import {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Retrive your password</ModalHeader>
+          <ModalHeader>Change your password</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-              <Text>Enter your new email </Text>
+              <Text>Enter your new password </Text>
               <Flex flexDirection='column' w='full' justifyContent='center' alignItems='center'>
-                  <FormControl my='5' isInvalid={!emailValid}>
-                    <FormLabel fontSize="lg">Write your new email</FormLabel>
+                  <FormControl my='5' isInvalid={!passwordValid}>
+                    <FormLabel fontSize="lg">Write your new password</FormLabel>
                     <InputGroup size='lg'>
                         <InputLeftElement 
                           pointerEvents="none"
-                          children={<EmailIcon color="gray.300" />}
+                          children={<ViewOffIcon color="gray.300" />}
                         />
                         <Input
-                          onBlur={emailBlurHandler}
-                          onChange={emailChangeHandler}
-                          placeholder="Enter your email"
-                          type="email"
+                          onBlur={passwordBlurHandler}
+                          onChange={passwordChangeHandler}
+                          placeholder="Enter your password"
+                          type="password"
                         />
                     </InputGroup>
-                    {!emailValid && (
-                        <FormErrorMessage>Email is required</FormErrorMessage>
+                    {!passwordValid && (
+                        <FormErrorMessage>Password is required</FormErrorMessage>
                     )}
                   </FormControl>
-                  <Button onClick={updateEmailHandler} my='5'>Change an email</Button>
+                  <Button onClick={updatePasswordHandler} my='5'>Change password</Button>
               </Flex>
           </ModalBody>
         </ModalContent>

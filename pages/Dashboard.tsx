@@ -1,8 +1,7 @@
-import { User } from "firebase/auth";
+import { sendPasswordResetEmail, User, signOut, deleteUser } from "firebase/auth";
 import { useContext } from "react";
 import { AuthContext } from "../src/Context/AuthContext";
 import { auth } from "../src/firebase-config";
-import { signOut } from "firebase/auth";
 import {
   Button,
   Flex,
@@ -12,10 +11,10 @@ import {
   Box,
   Text,
   ButtonGroup,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-
+import ChangeEmail from "../src/components/DashboardModals/ChangeEmail";
 interface AuthContextType {
   user?: User;
 }
@@ -25,7 +24,11 @@ export default function Dashboard() {
   const { user } = context;
   const router = useRouter();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: emailIsOpen,
+    onOpen: emailOnOpen,
+    onClose: emailOnClose,
+  } = useDisclosure();
 
   const signOutHandler = async () => {
     try {
@@ -54,6 +57,17 @@ export default function Dashboard() {
     return <h2>Loading...</h2>;
   }
 
+  const passwordUpdateHandler = () => {
+    sendPasswordResetEmail(auth, user.email!);
+    toast({
+      title: "Success",
+      description: "We send you an email with password reset link",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   return (
     <Container mt="52" centerContent={true} maxW="container.lg">
       <Box
@@ -77,15 +91,16 @@ export default function Dashboard() {
             </Text>
           </Flex>
           <ButtonGroup gap="4" size="lg">
-            <Button>Change an Email</Button>
-            <Button>Change Password</Button>
-            <Button colorScheme='red'>Delete account</Button>
+            <Button onClick={emailOnOpen}>Change an Email</Button>
+            <Button onClick={passwordUpdateHandler}>Change Password</Button>
+            <Button colorScheme="red">Delete account</Button>
           </ButtonGroup>
           <Button onClick={signOutHandler} colorScheme="teal" size="lg">
             Sign out
           </Button>
         </Flex>
       </Box>
+      <ChangeEmail user={user} isOpen={emailIsOpen} onClose={emailOnClose} />
     </Container>
   );
 }

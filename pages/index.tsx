@@ -18,8 +18,6 @@ import { EmailIcon, ViewOffIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useState } from "react";
 import ModalComponent from "../src/components/RetrivePasswordModal";
-import { useContext } from "react";
-import { AuthContext } from '../src/Context/AuthContext';
 import { auth } from "../src/firebase-config";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from "next/router";
